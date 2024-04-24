@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unos Projekta</title>
+</head>
+<body>
+  <h2>Unos Novog Projekta</h2>
+  <form id="projectForm">
+    <label for="projectName">Naziv projekta:</label><br>
+    <input type="text" id="projectName" name="projectName" required><br><br>
+
+    <label for="projectDescription">Opis projekta:</label><br>
+    <textarea id="projectDescription" name="projectDescription" rows="4" cols="50" required></textarea><br><br>
+
+    <label for="projectPrice">Cijena projekta:</label><br>
+    <input type="number" id="projectPrice" name="projectPrice" required><br><br>
+
+    <label for="projectTasks">Obavljeni poslovi:</label><br>
+    <input type="text" id="projectTasks" name="projectTasks" required><br><br>
+
+    <label for="projectStartDate">Datum početka:</label><br>
+    <input type="date" id="projectStartDate" name="projectStartDate" required><br><br>
+
+    <label for="projectEndDate">Datum završetka:</label><br>
+    <input type="date" id="projectEndDate" name="projectEndDate" required><br><br>
+
+    <h3>Članovi Projektnog Tima:</h3>
+
+    <div id="teamMembers">
+      
+      <div>
+        <label for="firstName">Ime:</label>
+        <input type="text" id="firstName" name="firstName" required>
+        <label for="lastName">Prezime:</label>
+        <input type="text" id="lastName" name="lastName" required>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+    </div>
+
+    <button type="button" id="addMember">Dodaj Člana Tima</button><br><br>
+
+    <button type="submit" id="submitButton">Spremi Projekt</button>
+  </form>
+
+  <script>
+    document.getElementById('addMember').addEventListener('click', function() {
+      const teamMembersDiv = document.getElementById('teamMembers');
+      const memberDiv = document.createElement('div');
+      memberDiv.innerHTML = `
+        <label for="firstName">Ime:</label>
+        <input type="text" name="firstName" required>
+        <label for="lastName">Prezime:</label>
+        <input type="text" name="lastName" required>
+        <label for="email">E-mail:</label>
+        <input type="email" name="email" required>
+      `;
+      teamMembersDiv.appendChild(memberDiv);
+    });
+
+    document.getElementById('submitButton').addEventListener('click', function() {
+    const formData = {
+        name: document.getElementById('projectName').value,
+        description: document.getElementById('projectDescription').value,
+        price: document.getElementById('projectPrice').value,
+        tasks: document.getElementById('projectTasks').value,
+        startDate: document.getElementById('projectStartDate').value,
+        endDate: document.getElementById('projectEndDate').value,
+        teamMembers: []  
+    };
+
+    const teamMemberDivs = document.querySelectorAll('#teamMembers div');
+    teamMemberDivs.forEach(function(div) {
+        const firstName = div.querySelector('input[name="firstName"]').value;
+        const lastName = div.querySelector('input[name="lastName"]').value;
+        const email = div.querySelector('input[name="email"]').value;
+        formData.teamMembers.push({ firstName, lastName, email });
+    });
+
+    fetch('/projects', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+    });
+  </script>
+</body>
+</html>
